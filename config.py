@@ -12,24 +12,24 @@ API_HASH = getenv("API_HASH")
 # Get your token from @BotFather on Telegram.
 BOT_TOKEN = getenv("BOT_TOKEN")
 # Add Owner Username without @ 
-OWNER_USERNAME = getenv("OWNER_USERNAME","HaiwanOwner")
+OWNER_USERNAME = getenv("OWNER_USERNAME","xi_xi_xi_xi_xi_xi")
 # Get Your bot username
-BOT_USERNAME = getenv("BOT_USERNAME" , "EsproAiMusicBot")
+BOT_USERNAME = getenv("BOT_USERNAME" , "CHOCOxAKG_bot")
 # Don't Add style font 
-BOT_NAME = getenv("BOT_NAME" , "EsproAiMusic")
+BOT_NAME = getenv("BOT_NAME" , "CHOCOAUTO-BOT")
 #get Your Assistant User name
-ASSUSERNAME = getenv("ASSUSERNAME" , "EsproAiAssistant")
-EVALOP = list(map(int, getenv("EVALOP", "6329875412  6329875412").split()))
+ASSUSERNAME = getenv("ASSUSERNAME" , "CHOCO_ASSISTANT_BOLTE")
+EVALOP = list(map(int, getenv("EVALOP", "6621610889").split()))
 # Get your mongo url from cloud.mongodb.com
 MONGO_DB_URI = getenv("MONGO_DB_URI", None)
 
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
 
 # Chat id of a group for logging bot's activities
-LOGGER_ID = int(getenv("LOGGER_ID", -1001801976314))
+LOGGER_ID = int(getenv("LOGGER_ID", -1001903774899))
 
 # Get this value from  on Telegram by /id
-OWNER_ID = int(getenv("OWNER_ID", 6329875412))
+OWNER_ID = int(getenv("OWNER_ID", 6621610889))
 
 ## Fill these variables if you're deploying on heroku.
 # Your heroku app name
@@ -39,15 +39,15 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
-    "https://github.com/TeamEspro/EsproAiMusicBot",
+    "https://github.com",
 )
-UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "ritik")
+UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "AKG")
 GIT_TOKEN = getenv(
     "GIT_TOKEN", None
 )  # Fill this variable if your upstream repository is private
 
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/EsproUpdate")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/EsproSupport")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/source_code_network")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/+Y9O5ptuPEFs3NGE1")
 
 # Set this to True if you want the assistant to automatically leave chats after an interval
 AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
