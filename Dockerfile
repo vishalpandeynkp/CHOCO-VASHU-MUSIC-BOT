@@ -1,5 +1,3 @@
-FROM nikolaik/python-nodejs:python3.10-nodejs19
-
 # Install system dependencies, including Tor
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -14,11 +12,13 @@ RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /us
     && chmod a+rx /usr/local/bin/yt-dlp \
     && yt-dlp -U
 
-# Expose Tor SOCKS5 port
-EXPOSE 9050
+# Expose Tor SOCKS5 port and Control port
+EXPOSE 9050 9051
 
-# Configure Tor (optional, using default settings)
-RUN echo "SocksPort 0.0.0.0:9050" >> /etc/tor/torrc
+# Configure Tor
+RUN echo "SocksPort 0.0.0.0:9050" >> /etc/tor/torrc \
+    && echo "ControlPort 9051" >> /etc/tor/torrc \
+    && echo "CookieAuthentication 1" >> /etc/tor/torrc
 
 # Copy application files
 COPY . /app/
