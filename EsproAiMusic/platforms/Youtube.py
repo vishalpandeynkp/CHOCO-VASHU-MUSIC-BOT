@@ -248,6 +248,7 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
+                "proxy": "socks5://127.0.0.1:9050",
                 "no_warnings": True,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -265,6 +266,7 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
+                "proxy": "socks5://127.0.0.1:9050",
                 "no_warnings": True,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -286,6 +288,7 @@ class YouTubeAPI:
                 "quiet": True,
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
+                "proxy": "socks5://127.0.0.1:9050",
                 "merge_output_format": "mp4",
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -299,6 +302,7 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
+                "proxy": "socks5://127.0.0.1:9050",
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
                 "postprocessors": [
@@ -330,7 +334,6 @@ class YouTubeAPI:
                     "-g",
                     "-f",
                     "best[height<=?720][width<=?1280]",
-                    f"{link}",
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
                 )
