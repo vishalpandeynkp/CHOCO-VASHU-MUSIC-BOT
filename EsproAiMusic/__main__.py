@@ -11,6 +11,30 @@ from EsproAiMusic.misc import sudo
 from EsproAiMusic.plugins import ALL_MODULES
 from EsproAiMusic.utils.database import get_banned_users, get_gbanned
 from config import BANNED_USERS
+from stem import Signal
+from stem.control import Controller
+import asyncio
+import threading
+
+async def change_tor_ip(control_port=9050, timeout=10):
+    try:
+        with Controller.from_port(port=control_port) as controller:
+            controller.authenticate()  # Authenticate with the control port
+            controller.signal(Signal.NEWNYM)  # Request a new IP address
+            await asyncio.sleep(timeout)  # Wait for the new IP to be established
+            print("Tor IP address changed successfully.")
+    except Exception as e:
+        print(f"Failed to change Tor IP: {e}")
+
+async def periodic_ip_rotation(interval=180, control_port=9050, timeout=10):
+    while True:
+        await change_tor_ip(control_port, timeout)
+        await asyncio.sleep(interval)  # Wait for the specified interval before changing IP again
+
+def run_periodic_ip_rotation():
+    asyncio.run(periodic_ip_rotation())
+
+
 
 
 async def init():
@@ -59,4 +83,6 @@ async def init():
 
 
 if __name__ == "__main__":
+    ip_rotation_thread = threading.Thread(target=run_periodic_ip_rotation)
+    ip_rotation_thread.start()
     asyncio.get_event_loop().run_until_complete(init())
