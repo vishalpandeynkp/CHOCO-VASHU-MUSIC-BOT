@@ -4,13 +4,13 @@ RUN apt-get update \
        ffmpeg \
        wget \
        tor \
+       python3-pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install yt-dlp
 RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp \
-    && chmod a+rx /usr/local/bin/yt-dlp \
-    && yt-dlp -U
+    && chmod a+rx /usr/local/bin/yt-dlp
 
 # Expose Tor SOCKS5 port and Control port
 EXPOSE 9050 9051
@@ -26,4 +26,4 @@ WORKDIR /app/
 RUN pip3 install --no-cache-dir -U -r requirements.txt
 
 # Start Tor and your application
-CMD service tor start && bash start
+CMD ["sh", "-c", "tor & bash start"]
