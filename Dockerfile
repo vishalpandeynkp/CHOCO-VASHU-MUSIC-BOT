@@ -1,12 +1,13 @@
 # Base image
 FROM python:3.9-slim
 
-# Install system dependencies, including Tor
+# Install system dependencies, including Tor and git
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        ffmpeg \
        wget \
        tor \
+       git \
        python3-pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
