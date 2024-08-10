@@ -16,7 +16,7 @@ from stem.control import Controller
 import asyncio
 import threading
 
-async def change_tor_ip(control_port=9050, timeout=10):
+async def change_tor_ip(control_port=9051, timeout=10):
     try:
         with Controller.from_port(port=control_port) as controller:
             controller.authenticate()  # Authenticate with the control port
@@ -26,7 +26,7 @@ async def change_tor_ip(control_port=9050, timeout=10):
     except Exception as e:
         print(f"Failed to change Tor IP: {e}")
 
-async def periodic_ip_rotation(interval=180, control_port=9050, timeout=10):
+async def periodic_ip_rotation(interval=180, control_port=9051, timeout=10):
     while True:
         await change_tor_ip(control_port, timeout)
         await asyncio.sleep(interval)  # Wait for the specified interval before changing IP again
