@@ -1,13 +1,10 @@
 import asyncio
 import os
 import re
-from typing import Union
-
 import yt_dlp
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
 from youtubesearchpython.__future__ import VideosSearch
-
 from EsproAiMusic.utils.database import is_on_off
 from EsproAiMusic.utils.formatters import time_to_seconds
 
@@ -26,7 +23,6 @@ async def shell_cmd(cmd):
         else:
             return errorz.decode("utf-8")
     return out.decode("utf-8")
-
 
 class YouTubeAPI:
     def __init__(self):
@@ -145,9 +141,7 @@ class YouTubeAPI:
         )
         try:
             result = playlist.split("\n")
-            for key in result:
-                if key == "":
-                    result.remove(key)
+            result = [key for key in result if key != ""]
         except:
             result = []
         return result
@@ -181,7 +175,7 @@ class YouTubeAPI:
         ytdl_opts = {
             "quiet": True,
             "proxy": "socks5://127.0.0.1:9050",
-            "cookiefile": "path/to/cookies.txt"  # Add cookiefile option
+            "cookiefile": cookiefile
         }
         ydl = yt_dlp.YoutubeDL(ytdl_opts)
         with ydl:
@@ -241,37 +235,41 @@ class YouTubeAPI:
         songvideo: Union[bool, str] = None,
         format_id: Union[bool, str] = None,
         title: Union[bool, str] = None,
-        cookiefile: str = None  # Add cookiefile parameter
+        cookiefile: str = None
     ) -> str:
         if videoid:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        if songvideo:
-            ytdl_opts = {
-                "format": "best[height<=?720][width<=?1280]",
-                "outtmpl": f"{mystic}.mp4",
+        if cookiefile:
+            ydl_opts = {
                 "quiet": True,
                 "proxy": "socks5://127.0.0.1:9050",
-                "cookiefile": cookiefile  # Add cookiefile option
+                "cookiefile": cookiefile,
             }
         else:
-            ytdl_opts = {
-                "format": format_id,
-                "outtmpl": f"{mystic}.mp4",
+            ydl_opts = {
                 "quiet": True,
                 "proxy": "socks5://127.0.0.1:9050",
-                "cookiefile": cookiefile  # Add cookiefile option
             }
-        ydl = yt_dlp.YoutubeDL(ytdl_opts)
+
+        ydl = yt_dlp.YoutubeDL(ydl_opts)
+        result = ydl.extract_info(link, download=False)
+        if "formats" in result:
+            format_id = format_id or result["formats"][0]["format_id"]
+
+        if format_id:
+            ydl_opts.update({
+                "format": format_id
+            })
+
+        ydl = yt_dlp.YoutubeDL(ydl_opts)
+        filename = f"{title}.mp4"  # Ensure filename is simple
         try:
-            with ydl:
-                info_dict = ydl.extract_info(link, download=True)
-            if not info_dict:
-                return "Nothing to Download"
-            if "entries" in info_dict:
-                info_dict = info_dict["entries"][0]
-            url = info_dict.get("url", None)
-            return url
+            ydl.download([link])
         except Exception as e:
-            return str(e)
+            return f"Failed to download: {e}"
+
+        if os.path.exists(filename):
+            return filename
+        return None
