@@ -2,14 +2,15 @@ import asyncio
 import os
 import re
 from typing import Union
+
 import yt_dlp
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
 from youtubesearchpython.__future__ import VideosSearch
+
 from EsproAiMusic.utils.database import is_on_off
 from EsproAiMusic.utils.formatters import time_to_seconds
 
-cookiefile = 'cookies.txt'
 
 async def shell_cmd(cmd):
     proc = await asyncio.create_subprocess_shell(
@@ -24,6 +25,7 @@ async def shell_cmd(cmd):
         else:
             return errorz.decode("utf-8")
     return out.decode("utf-8")
+
 
 class YouTubeAPI:
     def __init__(self):
@@ -142,7 +144,9 @@ class YouTubeAPI:
         )
         try:
             result = playlist.split("\n")
-            result = [key for key in result if key != ""]
+            for key in result:
+                if key == "":
+                    result.remove(key)
         except:
             result = []
         return result
@@ -173,11 +177,7 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        ytdl_opts = {
-            "quiet": True,
-            "proxy": "socks5://127.0.0.1:9050",
-            "cookiefile": cookiefile
-        }
+        ytdl_opts = {"quiet": True}
         ydl = yt_dlp.YoutubeDL(ytdl_opts)
         with ydl:
             formats_available = []
@@ -236,41 +236,111 @@ class YouTubeAPI:
         songvideo: Union[bool, str] = None,
         format_id: Union[bool, str] = None,
         title: Union[bool, str] = None,
-        cookiefile: str = None
     ) -> str:
         if videoid:
             link = self.base + link
-        if "&" in link:
-            link = link.split("&")[0]
-        if cookiefile:
-            ydl_opts = {
+        loop = asyncio.get_running_loop()
+
+        def audio_dl():
+            ydl_optssx = {
+                "format": "bestaudio[ext=m4a]",
+                "outtmpl": "downloads/%(id)s.%(ext)s",
+                "geo_bypass": True,
+                "nocheckcertificate": True,
                 "quiet": True,
-                "proxy": "socks5://127.0.0.1:9050",
-                "cookiefile": cookiefile,
+                "no_warnings": True,
             }
+            x = yt_dlp.YoutubeDL(ydl_optssx)
+            info = x.extract_info(link, False)
+            xyz = os.path.join("downloads", f"{info['id']}.{info['ext']}")
+            if os.path.exists(xyz):
+                return xyz
+            x.download([link])
+            return xyz
+
+        def video_dl():
+            ydl_optssx = {
+                "format": "(bestvideo[height<=?720][width<=?1280][ext=mp4])+(bestaudio[ext=m4a])",
+                "outtmpl": "downloads/%(id)s.%(ext)s",
+                "geo_bypass": True,
+                "nocheckcertificate": True,
+                "quiet": True,
+                "no_warnings": True,
+            }
+            x = yt_dlp.YoutubeDL(ydl_optssx)
+            info = x.extract_info(link, False)
+            xyz = os.path.join("downloads", f"{info['id']}.{info['ext']}")
+            if os.path.exists(xyz):
+                return xyz
+            x.download([link])
+            return xyz
+
+        def song_video_dl():
+            formats = f"{format_id}+140"
+            fpath = f"downloads/{title}"
+            ydl_optssx = {
+                "format": formats,
+                "outtmpl": fpath,
+                "geo_bypass": True,
+                "nocheckcertificate": True,
+                "quiet": True,
+                "no_warnings": True,
+                "prefer_ffmpeg": True,
+                "merge_output_format": "mp4",
+            }
+            x = yt_dlp.YoutubeDL(ydl_optssx)
+            x.download([link])
+
+        def song_audio_dl():
+            fpath = f"downloads/{title}.%(ext)s"
+            ydl_optssx = {
+                "format": format_id,
+                "outtmpl": fpath,
+                "geo_bypass": True,
+                "nocheckcertificate": True,
+                "quiet": True,
+                "no_warnings": True,
+                "prefer_ffmpeg": True,
+                "postprocessors": [
+                    {
+                        "key": "FFmpegExtractAudio",
+                        "preferredcodec": "mp3",
+                        "preferredquality": "192",
+                    }
+                ],
+            }
+            x = yt_dlp.YoutubeDL(ydl_optssx)
+            x.download([link])
+
+        if songvideo:
+            await loop.run_in_executor(None, song_video_dl)
+            fpath = f"downloads/{title}.mp4"
+            return fpath
+        elif songaudio:
+            await loop.run_in_executor(None, song_audio_dl)
+            fpath = f"downloads/{title}.mp3"
+            return fpath
+        elif video:
+            if await is_on_off(1):
+                direct = True
+                downloaded_file = await loop.run_in_executor(None, video_dl)
+            else:
+                proc = await asyncio.create_subprocess_exec(
+                    "yt-dlp",
+                    "-g",
+                    "-f",
+                    "best[height<=?720][width<=?1280]",
+                    f"{link}",
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                )
+                stdout, stderr = await proc.communicate()
+                if stdout:
+                    downloaded_file = stdout.decode().split("\n")[0]
+                    direct = None
+                else:
+                    return
         else:
-            ydl_opts = {
-                "quiet": True,
-                "proxy": "socks5://127.0.0.1:9050",
-            }
-
-        ydl = yt_dlp.YoutubeDL(ydl_opts)
-        result = ydl.extract_info(link, download=False)
-        if "formats" in result:
-            format_id = format_id or result["formats"][0]["format_id"]
-
-        if format_id:
-            ydl_opts.update({
-                "format": format_id
-            })
-
-        ydl = yt_dlp.YoutubeDL(ydl_opts)
-        filename = f"{title}.mp4"  # Ensure filename is simple
-        try:
-            ydl.download([link])
-        except Exception as e:
-            return f"Failed to download: {e}"
-
-        if os.path.exists(filename):
-            return filename
-        return None
+            direct = True
+            downloaded_file = await loop.run_in_executor(None, audio_dl)
+        return downloaded_file, direct
