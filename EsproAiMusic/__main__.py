@@ -56,12 +56,12 @@ async def init():
         pass
     await EsproAi.decorators()
     LOGGER("CHOCO").info(
-        "CHOCO stated jaao enjoy karo \n Please 🥺 aapna gf haiwan ko de do please please please please 🥺🥺🥺🥺.."
+        "CHOCO stated jaao enjoy karo \n Please 🥺 🥺🥺🥺🥺.."
     )
     await idle()
     await app.stop()
     await userbot.stop()
-    LOGGER("EsproAiMusic").info("𝗦𝗧𝗢𝗣 𝗧𝗠𝗠 𝗠𝗨𝗦𝗜𝗖🎻 𝗕𝗢𝗧..")
+    LOGGER("EsproAiMusic").info("𝗦𝗧𝗢𝗣  𝗠𝗨𝗦𝗜𝗖🎻 𝗕𝗢𝗧..")
 
 
 if __name__ == "__main__":
