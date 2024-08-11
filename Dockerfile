@@ -15,7 +15,7 @@ RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /us
     && yt-dlp -U
 
 # Expose Tor SOCKS5 port
-EXPOSE 9050
+EXPOSE 9050 9051
 
 # Configure Tor
 RUN echo "SocksPort 0.0.0.0:9050" >> /etc/tor/torrc \
