@@ -11,7 +11,7 @@ from youtubesearchpython.__future__ import VideosSearch
 from EsproAiMusic.utils.database import is_on_off
 from EsproAiMusic.utils.formatters import time_to_seconds
 
-cookies_file = 'cookies.txt'
+# cookies_file = 'cookies.txt'
 async def shell_cmd(cmd):
     proc = await asyncio.create_subprocess_shell(
         cmd,
@@ -249,7 +249,7 @@ class YouTubeAPI:
                 "nocheckcertificate": True,
                 "quiet": True,
                 "proxy": "socks5://127.0.0.1:9050",
-                "cookies": cookies_file,
+                # "cookies": cookies_file,
                 "no_warnings": True,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -268,7 +268,7 @@ class YouTubeAPI:
                 "nocheckcertificate": True,
                 "quiet": True,
                 "proxy": "socks5://127.0.0.1:9050",
-                "cookies": cookies_file,
+                # "cookies": cookies_file,
                 "no_warnings": True,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -291,7 +291,7 @@ class YouTubeAPI:
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
                 "proxy": "socks5://127.0.0.1:9050",
-                "cookies": cookies_file,
+                # "cookies": cookies_file,
                 "merge_output_format": "mp4",
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -306,7 +306,7 @@ class YouTubeAPI:
                 "nocheckcertificate": True,
                 "quiet": True,
                 "proxy": "socks5://127.0.0.1:9050",
-                "cookies": cookies_file,
+                # "cookies": cookies_file,
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
                 "postprocessors": [
