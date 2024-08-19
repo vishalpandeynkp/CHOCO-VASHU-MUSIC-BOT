@@ -28,4 +28,4 @@ WORKDIR /app/
 RUN pip3 install --no-cache-dir -U -r requirements.txt
 
 # Start Tor and your application
-CMD service tor start && bash start
+CMD ["bash", "-c", "tor & bash start"]
